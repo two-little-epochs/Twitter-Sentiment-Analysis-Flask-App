@@ -11,7 +11,7 @@ import pickle
 import time
 import pandas as pd
 
-from datetime import date
+from datetime import datetime
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
@@ -70,7 +70,7 @@ def get_user_timeline(username):
 
     consumer_key = "6Q0ILAuN9SYNo7QyE4FUYICPg"
     consumer_secret = "ehSKg8YwjdDlrI3qdjnw4qcc13pxZ3n98N7LJh4Urc4iHv1r48"
-    access_token = "744994297-HpJhG5WiHFmexycz1iaKeeRHrbtOyyLWUyfGVjBw"
+    access_key = "744994297-HpJhG5WiHFmexycz1iaKeeRHrbtOyyLWUyfGVjBw"
     access_secret = "mBWkFrZuJC4sV2jbWg7b5QvWm1HTUowwDuC25wSqnjQLz"
 
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
@@ -89,9 +89,9 @@ def get_analyzed_tweets(timeline, start, end):
     """
 
     start = list(map(int, start.split('-')))
-    start = date(start[0], start[1], start[2])
+    start = datetime(start[0], start[1], start[2], 0, 0, 0)
     end = list(map(int, end.split('-')))
-    end = date(end[0], end[1], end[2])
+    end = date(end[0], end[1], end[2], 23, 59, 59)
 
     analyzed_tweets = []
     for tweet in timeline:
