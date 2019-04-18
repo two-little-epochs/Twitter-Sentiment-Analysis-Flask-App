@@ -91,7 +91,7 @@ def get_analyzed_tweets(timeline, start, end):
     start = list(map(int, start.split('-')))
     start = datetime(start[0], start[1], start[2], 0, 0, 0)
     end = list(map(int, end.split('-')))
-    end = date(end[0], end[1], end[2], 23, 59, 59)
+    end = datetime(end[0], end[1], end[2], 23, 59, 59)
 
     analyzed_tweets = []
     for tweet in timeline:
