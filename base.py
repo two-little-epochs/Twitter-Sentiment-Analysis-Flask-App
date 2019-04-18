@@ -5,15 +5,13 @@ Created on Wed Apr 17 21:53:52 2019
 @author: YQ
 """
 
-# https://stackoverflow.com/questions/49731259/tweepy-get-tweets-among-two-dates/49731413
-
 import tweepy
 import re
 import pickle
 import time
 import pandas as pd
 
-from datetime import datetime
+from datetime import date
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
@@ -35,6 +33,18 @@ def preprocess(text):
         tokens.append(token)
     return " ".join(tokens)
 
+def decode_sentiment(score, include_neutral=True):
+    if include_neutral:
+        label = NEUTRAL
+        if score <= SENTIMENT_THRESHOLDS[0]:
+            label = NEGATIVE
+        elif score >= SENTIMENT_THRESHOLDS[1]:
+            label = POSITIVE
+
+        return label
+    else:
+        return NEGATIVE if score < 0.5 else POSITIVE
+
 def predict(text, include_neutral=True):
     start_at = time.time()
     # Tokenize text
@@ -47,46 +57,49 @@ def predict(text, include_neutral=True):
 
     return {"label": label, "score": float(score),
        "elapsed_time": time.time()-start_at}
-    
-def decode_sentiment(score, include_neutral=True):
-    if include_neutral:        
-        label = NEUTRAL
-        if score <= SENTIMENT_THRESHOLDS[0]:
-            label = NEGATIVE
-        elif score >= SENTIMENT_THRESHOLDS[1]:
-            label = POSITIVE
 
-        return label
-    else:
-        return NEGATIVE if score < 0.5 else POSITIVE  
-    
-    
-consumer_key = ""
-consumer_secret = ""
-access_key = ""
-access_secret = ""
+# return timeline in list
+def get_user_timeline(username):
+    """
+    parameters
+    username: string
 
-auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-auth.set_access_token(access_key, access_secret)
-api = tweepy.API(auth)
+    returns
+    api.user_timeline(username): list
+    """
 
-"""
-User input arguments
-"""
-timeline = api.user_timeline("fchollet")
+    consumer_key = ""
+    consumer_secret = ""
+    access_key = ""
+    access_secret = ""
 
-stop = datetime(2019, 4, 18, 23, 59, 59)
-start = datetime(2019, 4, 10, 0, 0, 0)
-########################################
+    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    auth.set_access_token(access_key, access_secret)
+    api = tweepy.API(auth)
+    return api.user_timeline(username)
 
+def get_analyzed_tweets(timeline, start, end):
+    """
+    parameters
+    timeline: list
+    start, end: string
 
-tweets = []
-for tweet in timeline:
-    if tweet.created_at < stop and tweet.created_at >= start:
-        prediction = predict(tweet.text)
-        tweets.append((tweet.created_at, preprocess(tweet.text), prediction["label"], prediction["score"]))
-    elif tweet.created_at < start:
-        break
+    returns
+    analyzed_tweets: pandas.DataFrame
+    """
 
-tweets = pd.DataFrame(tweets, columns=["Datetime", "Tweet", "Sentiment", "Score"])
+    start = list(map(int, start.split('-')))
+    start = date(start[0], start[1], start[2])
+    end = list(map(int, end.split('-')))
+    end = date(end[0], end[1], end[2])
 
+    analyzed_tweets = []
+    for tweet in timeline:
+        if tweet.created_at >= start and tweet.created_at <= end:
+            prediction = predict(tweet.text)
+            analyzed_tweets.append((tweet.created_at, preprocess(tweet.text), prediction["label"], prediction["score"]))
+        elif tweet.created_at < start:
+            break
+
+    analyzed_tweets = pd.DataFrame(analyzed_tweets, columns=["Datetime", "Tweet", "Sentiment", "Score"])
+    return analyzed_tweets
