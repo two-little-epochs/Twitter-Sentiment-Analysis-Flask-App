@@ -96,12 +96,9 @@ def get_analyzed_tweets(timeline, start, end):
     end = list(map(int, end.split('-')))
     end = datetime(end[0], end[1], end[2], 23, 59, 59)
 
-    # load timeline obtained from twitter API (comes in some object format)
-    json_timeline = timeline
-
     # populate analyzed tweets between stated dates into a Pandas DataFrame
     analyzed_tweets = pd.DataFrame(columns=["Datetime", "Tweet", "Sentiment", "Score"])
-    for tweet in json_timeline:
+    for tweet in timeline:
         if tweet.created_at >= start and tweet.created_at <= end:
             prediction = predict(tweet.text)
             analyzed_tweets["Datetime"].append(tweet.created_at)
