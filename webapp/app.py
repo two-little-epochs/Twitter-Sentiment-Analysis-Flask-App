@@ -14,6 +14,7 @@ import re
 import tweepy
 import pickle
 import pandas as pd
+import numpy as np
 import tensorflow as tf
 
 
@@ -23,7 +24,7 @@ tokenizer = pickle.load(open("tokenizer.p", "rb"))
 model = load_model("twitter.h5")
 
 # https://github.com/keras-team/keras/issues/10431
-model._make_predict_function()
+#model._make_predict_function()
 graph = tf.get_default_graph()
 
 
@@ -121,12 +122,13 @@ def predict(timeline, start, end):
             tweets.append(preprocess(tweet.text))
         elif tweet.created_at < start:
             break
-        
+    
     with graph.as_default():
         word_vec = pad_sequences(tokenizer.texts_to_sequences(tweets), maxlen=SEQUENCE_LENGTH)
-        predictions = model.predict(word_vec, batch_size=16)
+        predictions = model.predict(word_vec, batch_size=8)
         
-    analyzed_tweets["Score"] = predictions
+    analyzed_tweets["Score"] = np.squeeze(predictions, -1)
+    analyzed_tweets["Sentiment"] = [decode_sentiment(x) for x in np.squeeze(predictions, -1)]
     analyzed_tweets["Datetime"] = date
     analyzed_tweets["Tweet"] = tweets
     
@@ -148,4 +150,4 @@ def index():
         return render_template('index.html')  
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+    app.run(debug=False, host='0.0.0.0')
