@@ -6,6 +6,7 @@ Created on Thu Apr 18 15:29:37 2019
 """
 
 from flask import Flask, render_template, request
+from pandas import DataFrame as df
 import base
 
 app = Flask(__name__)
