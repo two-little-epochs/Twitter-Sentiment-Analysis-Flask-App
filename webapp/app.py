@@ -10,17 +10,24 @@ import base
 
 app = Flask(__name__)
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template('index.html')
+    if request.method == 'POST':
+        username = request.form['username']
+        start = request.form['from']
+        end = request.form['to']
+        table = base.get_analyzed_tweets(base.get_user_timeline(username), start, end)
+        return render_template('index.html', table=table.to_html())
+    else:
+        return render_template('index.html')
 
-@app.route('/process', methods=['POST'])
-def process():
-    username = request.form['username']
-    start = request.form['from']
-    end = request.form['to']
-    table = base.get_analyzed_tweets(base.get_user_timeline(username), start, end)
-    return render_template('index.html', table=table.to_html())
+# @app.route('/process', methods=['POST'])
+# def process():
+#     username = request.form['username']
+#     start = request.form['from']
+#     end = request.form['to']
+#     table = base.get_analyzed_tweets(base.get_user_timeline(username), start, end)
+#     return render_template('index.html', table=table.to_html())
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')

@@ -44,9 +44,9 @@ def predict(text, include_neutral=True):
 
     return {"label": label, "score": float(score),
        "elapsed_time": time.time()-start_at}
-    
+
 def decode_sentiment(score, include_neutral=True):
-    if include_neutral:        
+    if include_neutral:
         label = NEUTRAL
         if score <= SENTIMENT_THRESHOLDS[0]:
             label = NEGATIVE
@@ -55,18 +55,14 @@ def decode_sentiment(score, include_neutral=True):
 
         return label
     else:
-        return NEGATIVE if score < 0.5 else POSITIVE    
+        return NEGATIVE if score < 0.5 else POSITIVE
 
 file = json.load(open("starbizmy_short.json", "rb"))
 
 df = pd.DataFrame(columns=["tweet", "sentiment", "score"])
 df["tweet"] = [preprocess(x["text"]) for x in file]
 
-tweet = []
-for i in [x["text"] for x in file]:
-    tweet.append(preprocess(i))
-    
-x = pad_sequences(tokenizer.texts_to_sequences(tweet), maxlen=SEQUENCE_LENGTH)
+x = pad_sequences(tokenizer.texts_to_sequences(df["tweet"]), maxlen=SEQUENCE_LENGTH)
 score = model.predict(x, batch_size=512)
 sentiment = [decode_sentiment(i) for i in score]
 
