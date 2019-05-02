@@ -4,28 +4,6 @@ Created on Thu Apr 18 15:29:37 2019
 
 @author: Yee Jet Tan
 """
-
-from flask import Flask, render_template, request
-<<<<<<< HEAD
-import base
-
-app = Flask(__name__)
-
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-@app.route('/process', methods=['POST'])
-def process():
-    username = request.form['username']
-    start = request.form['from']
-    end = request.form['to']
-    table = base.get_analyzed_tweets(base.get_user_timeline(username), start, end)
-    return render_template('index.html', table=table.to_html())
-
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
-=======
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from datetime import datetime
@@ -171,4 +149,3 @@ def index():
 
 if __name__ == '__main__':
     app.run(debug=False, host='0.0.0.0')
->>>>>>> fix
