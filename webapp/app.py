@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Thu Apr 18 15:29:37 2019
-
 @author: Yee Jet Tan
 """
 
@@ -59,7 +58,6 @@ def get_user_timeline(username):
     """
     parameters:
     username: string
-
     returns:
     api.user_timeline(username): list
     """
@@ -79,7 +77,6 @@ def get_analyzed_tweets(timeline, start, end):
     parameters:
     timeline: list
     start, end: string
-
     returns:
     analyzed_tweets: pandas.DataFrame
     """
