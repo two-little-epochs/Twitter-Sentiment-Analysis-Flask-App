@@ -4,6 +4,8 @@ Created on Thu Apr 18 15:29:37 2019
 
 @author: Yee Jet Tan
 """
+
+from flask import Flask
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from datetime import datetime
@@ -52,7 +54,6 @@ def decode_sentiment(score, include_neutral=True):
     else:
         return NEGATIVE if score < 0.5 else POSITIVE
 
-# return timeline in list
 def get_user_timeline(username):
     """
     parameters:
@@ -102,7 +103,6 @@ def get_analyzed_tweets(timeline, start, end):
 
     return analyzed_tweets
 
-
 def predict(timeline, start, end):
     # process start and end date
     start = list(map(int, start.split('-')))
@@ -148,4 +148,4 @@ def index():
         return render_template('index.html')
 
 if __name__ == '__main__':
-    app.run(debug=False, host='0.0.0.0')
+    app.run(debug=True, host='0.0.0.0')
