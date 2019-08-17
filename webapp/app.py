@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Apr 18 15:29:37 2019
-
-@author: Yee Jet Tan
-"""
 
 from flask import Flask, render_template, request
 from tensorflow.keras.models import load_model
@@ -17,7 +12,6 @@ import pandas as pd
 import numpy as np
 import tensorflow as tf
 
-
 app = Flask(__name__)
 
 tokenizer = pickle.load(open("tokenizer.p", "rb"))
@@ -26,7 +20,6 @@ model = load_model("twitter.h5")
 # https://github.com/keras-team/keras/issues/10431
 #model._make_predict_function()
 graph = tf.get_default_graph()
-
 
 def preprocess(text):
     TEXT_CLEANING_RE = "@\S+|https?:\S+|http?:\S|[^A-Za-z0-9]+"
@@ -53,13 +46,12 @@ def decode_sentiment(score, include_neutral=True):
         return label
     else:
         return NEGATIVE if score < 0.5 else POSITIVE
-    
+
 # return timeline in list
 def get_user_timeline(username):
     """
     parameters:
     username: string
-
     returns:
     api.user_timeline(username): list
     """
@@ -72,18 +64,17 @@ def get_user_timeline(username):
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_key, access_secret)
     api = tweepy.API(auth)
-    return api.user_timeline(username)  
+    return api.user_timeline(username)
 
 def get_analyzed_tweets(timeline, start, end):
     """
     parameters:
     timeline: list
     start, end: string
-
     returns:
     analyzed_tweets: pandas.DataFrame
     """
-    
+
     # process start and end date
     start = list(map(int, start.split('-')))
     start = datetime(start[0], start[1], start[2], 0, 0, 0)
@@ -104,7 +95,7 @@ def get_analyzed_tweets(timeline, start, end):
 
     return analyzed_tweets
 
-    
+
 def predict(timeline, start, end):
     # process start and end date
     start = list(map(int, start.split('-')))
@@ -112,7 +103,7 @@ def predict(timeline, start, end):
     end = list(map(int, end.split('-')))
     end = datetime(end[0], end[1], end[2], 23, 59, 59)
     SEQUENCE_LENGTH = 300
-    
+
     analyzed_tweets = pd.DataFrame(columns=["Datetime", "Tweet", "Sentiment", "Score"])
     date = []
     tweets = []
@@ -122,18 +113,18 @@ def predict(timeline, start, end):
             tweets.append(preprocess(tweet.text))
         elif tweet.created_at < start:
             break
-    
+
     with graph.as_default():
         word_vec = pad_sequences(tokenizer.texts_to_sequences(tweets), maxlen=SEQUENCE_LENGTH)
         predictions = model.predict(word_vec, batch_size=8)
-        
+
     analyzed_tweets["Score"] = np.squeeze(predictions, -1)
     analyzed_tweets["Sentiment"] = [decode_sentiment(x) for x in np.squeeze(predictions, -1)]
     analyzed_tweets["Datetime"] = date
     analyzed_tweets["Tweet"] = tweets
-    
+
     return analyzed_tweets
-    
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -141,13 +132,13 @@ def index():
         username = request.form['username']
         start = request.form['from']
         end = request.form['to']
-        
+
         timeline = get_user_timeline(username)
         table = predict(timeline, start, end)
-        
+
         return render_template('index.html', tables=[table.to_html()], titles=table.columns.values)
     else:
-        return render_template('index.html')  
+        return render_template('index.html')
 
 if __name__ == '__main__':
-    app.run(debug=False, host='0.0.0.0')
+    app.run(debug=False, host='0.0.0.0', port=5000)
