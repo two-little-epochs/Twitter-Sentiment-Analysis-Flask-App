@@ -1,8 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Apr 18 15:29:37 2019
-@author: Yee Jet Tan
-"""
 
 from flask import Flask, render_template, request
 from tensorflow.keras.models import load_model
@@ -24,7 +20,6 @@ model = load_model("twitter.h5")
 # https://github.com/keras-team/keras/issues/10431
 #model._make_predict_function()
 graph = tf.get_default_graph()
-
 
 def preprocess(text):
     TEXT_CLEANING_RE = "@\S+|https?:\S+|http?:\S|[^A-Za-z0-9]+"
