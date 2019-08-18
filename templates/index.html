@@ -1,35 +1,50 @@
 <html>
-    <head>
-        <link rel="stylesheet" href='{{ url_for('static', filename='/static/style.css') }}'>
-        <title>Twitter Sentiment Analysis</title>
-    </head>
-    <body>
-        <h1>Twitter Sentiment Analysis</h1>
-        <p>
-            Welcome. This app serves to analyze tweet sentiments of a
-            specific person or hashtag in a specific range of time.
-        </p>
 
-        <form method='post' action='/'>
-            <div>
-                Twitter User: <br>
-                <input type="text" name="username" class="form-control" placeholder="username or hashtag" required autofocus>
-            </div>
-            <div>
-                From: <br>
-                <input type="date" name="from" class="form-control" required>
-            </div>
-            <div>
-                To: <br>
-                <input type="date" name="to" class="form-control" required>
-            </div>
-            <input type="submit" value="Start analyzing!">
-        </form>
+<head>
+    <link rel="stylesheet" href='{{ url_for('static', filename='/static/style.css') }}'>
+    <title>Twitter Sentiment Analysis</title>
+</head>
 
-        {% for table in tables %}
-                {{ table|safe }}
-        {% endfor %}
+<body>
+    <h1>Twitter Sentiment Analysis</h1>
+    <p>
+        Welcome. This app serves to analyze tweet sentiments of a
+        specific person or hashtag in a specific range of time.
+    </p>
+
+    <form method='post' action='/'>
+        <div>
+            Twitter User: <br>
+            <input type="text" name="username" class="form-control" placeholder="username or hashtag" required autofocus>
+        </div>
+        <div>
+            From: <br>
+            <input id="startDate" type="date" name="from" class="form-control" required>
+        </div>
+        <div>
+            To: <br>
+            <input id="endDate" type="date" name="to" class="form-control" required>
+        </div>
+        <input type="submit" value="Start analyzing!">
+    </form>
+
+    {% for table in tables %}
+        {{ table|safe }}
+    {% endfor %}
 
     <a href="https://github.com/daQuincy/Twitter-Sentiment-Analysis-Flask-App">View this project on GitHub</a>
-    </body>
+    <script>
+        document.getElementById("endDate").addEventListener("change", function() {
+            var endDate = new Date(this.value);
+            var startDate = new Date(document.getElementById("startDate").value);
+            if (endDate <= startDate) {
+                alert("Please choose a date that is later than the start.")
+                this.value = null;
+            }
+            console.log(startDate); //e.g. Fri Nov 13 2015 00:00:00 GMT+0000 (GMT Standard Time)
+            console.log(endDate);
+        });
+    </script>
+</body>
+
 </html>
