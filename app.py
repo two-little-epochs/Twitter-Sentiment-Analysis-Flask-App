@@ -41,7 +41,8 @@ def get_user_timeline(username):
     auth.set_access_token(keys["access_key"], keys["access_secret"])
     api = tweepy.API(auth)
     
-    return api.user_timeline(username)
+    #return api.user_timeline(username)
+    return tweepy.Cursor(api.user_timeline, screen_name=username, tweet_mode="extended").items()
 
 def make_prediction(timeline, start, end):
     # process start and end date
@@ -56,10 +57,10 @@ def make_prediction(timeline, start, end):
     for tweet in timeline:
         if tweet.created_at >= start and tweet.created_at <= end:
             date.append(tweet.created_at)
-            tweets.append(tweet.text)
+            tweets.append(tweet.full_text)
         elif tweet.created_at < start:
             break
-
+        
     with graph.as_default():
         set_session(sess)
         predictions = predict(model, tokenizer, tweets)

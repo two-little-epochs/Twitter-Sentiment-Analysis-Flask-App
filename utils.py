@@ -50,7 +50,7 @@ def predict(model, tokenizer, tweets, include_neutral=True, sequence_length=300)
     tweets = [preprocess(t) for t in tweets]
     X = pad_sequences(tokenizer.texts_to_sequences(tweets), maxlen=sequence_length)
     # Predict
-    score = model.predict(X)
+    score = model.predict(X, batch_size=50)
     # Decode sentiment
     labels = []
     for s in score:
