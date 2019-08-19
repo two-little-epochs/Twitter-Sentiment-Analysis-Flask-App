@@ -38,17 +38,17 @@ def decode_sentiment(score, include_neutral=True):
         return NEGATIVE if score < 0.5 else POSITIVE    
     
     
-def predict(model, tokenizer, text, include_neutral=True, sequence_length=300):
+def predict(model, tokenizer, tweets, include_neutral=True, sequence_length=300):
     """
     model: Keras model
     tokenizer: Tokenizer object
-    text: List of strings (tweets)
+    tweets: List of strings (tweets)
     """
     
     start_at = time.time()
     # Tokenize text
-    text = [preprocess(t) for t in text]
-    X = pad_sequences(tokenizer.texts_to_sequences(text), maxlen=sequence_length)
+    tweets = [preprocess(t) for t in tweets]
+    X = pad_sequences(tokenizer.texts_to_sequences(tweets), maxlen=sequence_length)
     # Predict
     score = model.predict(X)
     # Decode sentiment
