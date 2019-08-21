@@ -59,7 +59,7 @@ def make_prediction(timeline, start, end):
             date.append(tweet.created_at)
             try:
                 if tweet.retweeted_status:
-                    tweets.append(tweet.retweeted_status.full_text)
+                    tweets.append("RT " + tweet.retweeted_status.full_text)
             except:
                 tweets.append(tweet.full_text)
         elif tweet.created_at < start:
