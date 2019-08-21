@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sun Aug 18 16:23:49 2019
-
-@author: YQ
-"""
 
 from utils import predict
 from tensorflow.keras.models import load_model
@@ -36,11 +31,11 @@ def get_user_timeline(username):
     returns:
     api.user_timeline(username): list
     """
-    
+
     auth = tweepy.OAuthHandler(keys["consumer_key"], keys["consumer_secret"])
     auth.set_access_token(keys["access_key"], keys["access_secret"])
     api = tweepy.API(auth)
-    
+
     #return api.user_timeline(username)
     return tweepy.Cursor(api.user_timeline, screen_name=username, tweet_mode="extended").items()
 
@@ -64,7 +59,7 @@ def make_prediction(timeline, start, end):
                 tweets.append(tweet.full_text)
         elif tweet.created_at < start:
             break
-        
+
     with graph.as_default():
         set_session(sess)
         predictions = predict(model, tokenizer, tweets)
@@ -85,13 +80,12 @@ def index():
         end = request.form['to']
 
         timeline = get_user_timeline(username)
+
         table = make_prediction(timeline, start, end)
 
         return render_template('index.html', tables=[table.to_html()], titles=table.columns.values)
     else:
         return render_template('index.html')
-    
+
 if __name__ == '__main__':
-    #app.run(debug=False, host='0.0.0.0', port=5000)
-    aa = get_user_timeline("realdonaldtrump")
-    bb = make_prediction(aa, "2019-8-17", "2019-8-20")
+    app.run(debug=False, host='0.0.0.0', port=5000)
