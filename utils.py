@@ -23,10 +23,10 @@ def preprocess(text, stem=False):
         else:
             tokens.append(token)
     return " ".join(tokens)
-
-
+    
+    
 def decode_sentiment(score, include_neutral=True):
-    if include_neutral:
+    if include_neutral:        
         label = NEUTRAL
         if score <= SENTIMENT_THRESHOLDS[0]:
             label = NEGATIVE
@@ -35,16 +35,16 @@ def decode_sentiment(score, include_neutral=True):
 
         return label
     else:
-        return NEGATIVE if score < 0.5 else POSITIVE
-
-
+        return NEGATIVE if score < 0.5 else POSITIVE    
+    
+    
 def predict(model, tokenizer, tweets, include_neutral=True, sequence_length=300):
     """
     model: Keras model
     tokenizer: Tokenizer object
     tweets: List of strings (tweets)
     """
-
+    
     start_at = time.time()
     # Tokenize text
     tweets = [preprocess(t) for t in tweets]
@@ -58,4 +58,4 @@ def predict(model, tokenizer, tweets, include_neutral=True, sequence_length=300)
         labels.append(label)
 
     return {"label": labels, "score": score,
-       "elapsed_time": time.time()-start_at}
+       "elapsed_time": time.time()-start_at}      
