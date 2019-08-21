@@ -57,7 +57,11 @@ def make_prediction(timeline, start, end):
     for tweet in timeline:
         if tweet.created_at >= start and tweet.created_at <= end:
             date.append(tweet.created_at)
-            tweets.append(tweet.full_text)
+            try:
+                if tweet.retweeted_status:
+                    tweets.append(tweet.retweeted_status.full_text)
+            except:
+                tweets.append(tweet.full_text)
         elif tweet.created_at < start:
             break
         
@@ -88,4 +92,6 @@ def index():
         return render_template('index.html')
     
 if __name__ == '__main__':
-    app.run(debug=False, host='0.0.0.0', port=5000)
+    #app.run(debug=False, host='0.0.0.0', port=5000)
+    aa = get_user_timeline("realdonaldtrump")
+    bb = make_prediction(aa, "2019-8-17", "2019-8-20")
