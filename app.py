@@ -52,7 +52,11 @@ def make_prediction(timeline, start, end):
     for tweet in timeline:
         if tweet.created_at >= start and tweet.created_at <= end:
             date.append(tweet.created_at)
-            tweets.append(tweet.full_text)
+            try:
+                if tweet.retweeted_status:
+                    tweets.append(tweet.retweeted_status.full_text)
+            except:
+                tweets.append(tweet.full_text)
         elif tweet.created_at < start:
             break
 
