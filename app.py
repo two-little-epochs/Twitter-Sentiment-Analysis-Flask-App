@@ -1,8 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sun Aug 18 16:23:49 2019
-@author: YQ
-"""
 
 from utils import predict
 from tensorflow.keras.models import load_model
@@ -26,7 +22,6 @@ graph = tf.get_default_graph()
 sess = tf.Session()
 set_session(sess)  # https://github.com/tensorflow/tensorflow/issues/28287
 model = load_model("twitter.h5")
-
 
 def get_user_timeline(username):
     """
@@ -58,7 +53,7 @@ def make_prediction(timeline, start, end):
             date.append(tweet.created_at)
             try:
                 if tweet.retweeted_status:
-                    tweets.append(tweet.retweeted_status.full_text)
+                    tweets.append("RT " + tweet.retweeted_status.full_text)
             except:
                 tweets.append(tweet.full_text)
         elif tweet.created_at < start:
@@ -75,7 +70,6 @@ def make_prediction(timeline, start, end):
     analyzed_tweets["Tweet"] = tweets
 
     return analyzed_tweets
-
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
