@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+"""
+Created on Sun Aug 18 16:23:49 2019
+@author: YQ
+"""
 
 from utils import predict
 from tensorflow.keras.models import load_model
@@ -64,6 +68,7 @@ def make_prediction(timeline, start, end):
         set_session(sess)
         predictions = predict(model, tokenizer, tweets)
 
+    print(predictions["score"].shape)
     analyzed_tweets["Score"] = np.squeeze(predictions["score"], -1)
     analyzed_tweets["Sentiment"] = predictions["label"]
     analyzed_tweets["Datetime"] = date
@@ -80,7 +85,6 @@ def index():
         end = request.form['to']
 
         timeline = get_user_timeline(username)
-
         table = make_prediction(timeline, start, end)
 
         return render_template('index.html', tables=[table.to_html()], titles=table.columns.values)
