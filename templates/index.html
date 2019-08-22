@@ -1,38 +1,51 @@
 <html>
 
 <head>
-    <link rel="stylesheet" href='{{ url_for('static', filename='/static/style.css') }}'>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <title>Twitter Sentiment Analysis</title>
 </head>
 
-<body>
-    <h1>Twitter Sentiment Analysis</h1>
-    <p>
-        Welcome. This app serves to analyze tweet sentiments of a
-        specific person or hashtag in a specific range of time.
+<body topmargin="30" leftmargin="50">
+    <h1 align="center">Twitter Sentiment Analysis</h1>
+    <p align="center">
+        <font size="3">
+            Welcome!
+            This app serves to analyze tweet sentiments of a
+            specific person or hashtag in a specific range of time.
+            <hr />
+        </font>
     </p>
+    <font size="2.5">
+        <form method='post' action='/'>
 
-    <form method='post' action='/'>
-        <div>
-            Twitter User: <br>
-            <input type="text" name="username" class="form-control" placeholder="username or hashtag" required autofocus>
-        </div>
-        <div>
-            From: <br>
-            <input id="startDate" type="date" name="from" class="form-control" required>
-        </div>
-        <div>
-            To: <br>
-            <input id="endDate" type="date" name="to" class="form-control" required>
-        </div>
-        <input type="submit" value="Start analyzing!">
-    </form>
+            <div>
+                Twitter User: <br />
+                <input height="10" type="text" name="username" class="form-control" placeholder="username or hashtag" required autofocus>
+                <br /> <br />
+            </div>
+            <div>
+                From: <br />
+                <input id="startDate" type="date" name="from" class="form-control" required>
+                <br /> <br />
+            </div>
+            <div>
+                To: <br />
+                <input id="endDate" type="date" name="to" class="form-control" required>
+                <br /> <br />
+            </div>
+            <input type="submit" value="Start analyzing!">
 
-    {% for table in tables %}
+        </form>
+
+        {% for table in tables %}
         {{ table|safe }}
-    {% endfor %}
+        {% endfor %}
 
-    <a href="https://github.com/daQuincy/Twitter-Sentiment-Analysis-Flask-App">View this project on GitHub</a>
+        <br /> <br />
+
+        <a href="https://github.com/daQuincy/Twitter-Sentiment-Analysis-Flask-App">View this project on GitHub</a>
+    </font>
+
     <script>
         document.getElementById("endDate").addEventListener("change", function() {
             var endDate = new Date(this.value);
