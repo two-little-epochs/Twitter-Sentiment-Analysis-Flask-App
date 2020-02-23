@@ -8,7 +8,7 @@
 - [License](#License)
 
 ## Introduction
-This is a simple web app built using [Flask](https://github.com/pallets/flask) and [Tweepy](https://www.tweepy.org/). It is used to display the sentiments of a user's tweets over a period of time.
+This is a simple web app built using [Flask](https://github.com/pallets/flask) and [Tweepy](https://www.tweepy.org/). It is used to display the sentiments of a user's tweets over a period of time. The sentiment analysis is done using machine learning and the model could be found and reproduced via this [notebook](./twitter_sentiment_analysis.ipynb).
 
 ## Installation
 
