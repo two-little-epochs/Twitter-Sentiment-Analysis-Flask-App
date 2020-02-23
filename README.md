@@ -1,5 +1,5 @@
 # Twitter Sentiment Analysis Flask App
-Web app to obtain sentiments of people's tweets.
+Web app to obtain tweet sentiments.
 
 ## Contents
 - [Introduction](#Introduction)
